@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nama Converter Anda</title>
+</head>
+<body>
+<div class='container'>
+  <h2 class='main-title'>🛠&#65039; Modding Editor Pro</h2>
+  <!-- 1. CVAR MANAGER -->
+          <div class='card'>
+            <h3>Cvar Manager</h3>
+            <textarea id='cvarBox' oninput='saveData(&quot;cvarBox&quot;)' placeholder='Paste codes here...'/>
+            <div class='btn-group'>
+              <button onclick='copyIt(&quot;cvarBox&quot;)'>COPY ALL</button>
+              <button class='btn-clear' onclick='clearIt(&quot;cvarBox&quot;)'>CLEAR ALL</button>
+              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;mod.nut&quot;)'>.NUT</button>
+              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;autoexec.cfg&quot;)'>.CFG</button>
+              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;config.txt&quot;)'>.TXT</button>
+            </div>
+          </div>
+
+          <!-- 2. ADDONINFO -->
+          <div class='card'>
+            <h3>AddonInfo</h3>
+            <textarea id='addonBox' oninput='saveData(&quot;addonBox&quot;)' placeholder='Addon information...'/>
+            <div class='btn-group'>
+              <button onclick='copyIt(&quot;addonBox&quot;)'>COPY ALL</button>
+              <button class='btn-clear' onclick='clearIt(&quot;addonBox&quot;)'>CLEAR ALL</button>
+              <button class='btn-dl' onclick='dl(&quot;addonBox&quot;, &quot;addoninfo.txt&quot;)'>DOWNLOAD .TXT</button>
+            </div>
+          </div>
+
+          <!-- 3. SCRIPT EDITOR -->
+          <div class='card'>
+            <h3>Script Editor</h3>
+            <textarea id='scriptBox' oninput='saveData(&quot;scriptBox&quot;)' placeholder='Write scripts here...'/>
+            <div class='btn-group'>
+              <button onclick='copyIt(&quot;scriptBox&quot;)'>COPY ALL</button>
+              <button class='btn-clear' onclick='clearIt(&quot;scriptBox&quot;)'>CLEAR ALL</button>
+              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.nut&quot;)'>.NUT</button>
+              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.cfg&quot;)'>.CFG</button>
+              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.txt&quot;)'>.TXT</button>
+            </div>
+          </div>
+
+    <footer>
+      &#169; <span id='y'/> Modding Tool Center | Auto-Save Enabled
+    </footer>
+  </div>
+
+   <script src"script.js"></script>
+
+</body>
+</html>
