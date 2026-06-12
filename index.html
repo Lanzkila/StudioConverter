@@ -3,53 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Converter Studio</title>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'></script>
+    <script src='https://unpkg.com/pdf-lib/dist/pdf-lib.min.js'></script>
+    
     <link rel="stylesheet" href="style.css">
-    <title>Nama Converter Anda</title>
+
 </head>
 <body>
-<div class='container'>
-  <h2 class='main-title'>🛠&#65039; Modding Editor Pro</h2>
-  <!-- 1. CVAR MANAGER -->
-          <div class='card'>
-            <h3>Cvar Manager</h3>
-            <textarea id='cvarBox' oninput='saveData(&quot;cvarBox&quot;)' placeholder='Paste codes here...'/>
-            <div class='btn-group'>
-              <button onclick='copyIt(&quot;cvarBox&quot;)'>COPY ALL</button>
-              <button class='btn-clear' onclick='clearIt(&quot;cvarBox&quot;)'>CLEAR ALL</button>
-              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;mod.nut&quot;)'>.NUT</button>
-              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;autoexec.cfg&quot;)'>.CFG</button>
-              <button class='btn-dl' onclick='dl(&quot;cvarBox&quot;, &quot;config.txt&quot;)'>.TXT</button>
-            </div>
-          </div>
-
-          <!-- 2. ADDONINFO -->
-          <div class='card'>
-            <h3>AddonInfo</h3>
-            <textarea id='addonBox' oninput='saveData(&quot;addonBox&quot;)' placeholder='Addon information...'/>
-            <div class='btn-group'>
-              <button onclick='copyIt(&quot;addonBox&quot;)'>COPY ALL</button>
-              <button class='btn-clear' onclick='clearIt(&quot;addonBox&quot;)'>CLEAR ALL</button>
-              <button class='btn-dl' onclick='dl(&quot;addonBox&quot;, &quot;addoninfo.txt&quot;)'>DOWNLOAD .TXT</button>
-            </div>
-          </div>
-
-          <!-- 3. SCRIPT EDITOR -->
-          <div class='card'>
-            <h3>Script Editor</h3>
-            <textarea id='scriptBox' oninput='saveData(&quot;scriptBox&quot;)' placeholder='Write scripts here...'/>
-            <div class='btn-group'>
-              <button onclick='copyIt(&quot;scriptBox&quot;)'>COPY ALL</button>
-              <button class='btn-clear' onclick='clearIt(&quot;scriptBox&quot;)'>CLEAR ALL</button>
-              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.nut&quot;)'>.NUT</button>
-              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.cfg&quot;)'>.CFG</button>
-              <button class='btn-dl' onclick='dl(&quot;scriptBox&quot;, &quot;script.txt&quot;)'>.TXT</button>
-            </div>
-          </div>
-
-    <footer>
-      &#169; <span id='y'/> Modding Tool Center | Auto-Save Enabled
-    </footer>
+<div id='converter-vault'>
+  <div class='title-zone'>
+    <h2>MANGA <span>STUDIO</span></h2>
+    <p style='font-size:12px; color:#718096; margin-top:5px;'>Hybrid: PDF Merge, Images, ZIP &amp; CBZ</p>
   </div>
+
+  <div class='drop-zone' id='drop-area' onclick='document.getElementById(&quot;file-input&quot;).click()'>
+    <div class='icon-circle'>
+      <svg height='26' viewBox='0 0 24 24' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M12 11V3m0 0l-4 4m4-4l4 4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/><path d='M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+    </div>
+    <p id='file-name'>Drop ZIP, CBZ, PDFs, or Images</p>
+    <input accept='.cbz, .zip, .pdf, image/*' id='file-input' multiple='multiple' style='display:none;' type='file'/>
+  </div>
+
+  <div class='control-stack'>
+    <div class='control-group'>
+      <label><span>MAX RESOLUTION (PDF ONLY)</span> <span id='reso-val' style='color:#0984e3'>Auto</span></label>
+      <select id='width-select' onchange='document.getElementById(&quot;reso-val&quot;).innerText = this.options[this.selectedIndex].text'>
+        <option value='original'>Auto (Original)</option>
+        <option value='2000'>2000px (Ultra)</option>
+        <option value='1600'>1600px (FHD)</option>
+        <option value='1200'>1200px (HD)</option>
+        <option value='800'>800px (Mobile)</option>
+      </select>
+    </div>
+    <div class='control-group'>
+      <label><span>QUALITY (PDF ONLY)</span> <span style='color:#0984e3'><span id='q-val'>80</span>%</span></label>
+      <input id='quality-range' max='100' min='10' oninput='document.getElementById(&quot;q-val&quot;).innerText=this.value' type='range' value='80'/>
+    </div>
+  </div>
+
+  <div class='status-area'>
+    <div style='display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#4a5568;'>
+      <span id='status-text' style='text-transform: uppercase;'>READY</span>
+      <span id='percentage'>0%</span>
+    </div>
+    <div class='progress-bg'><div id='progress-fill'/></div>
+  </div>
+
+  <div class='button-grid'>
+    <button class='btn-exec btn-pdf' id='pdf-btn'>CONVERT</button>
+    <button class='btn-exec btn-cbz' id='cbz-btn'>REVERSE</button>
+  </div>
+
+<div class='footer-note'>
+    <strong>Multi-Support:</strong> ZIP/CBZ to PDF, Multiple Images to PDF, or Multiple PDF Merge.<br>
+    &copy; <span id="current-year"></span> Manga Studio.
+</div>
+</div>
 
    <script src="script.js"></script>
 
