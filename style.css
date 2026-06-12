@@ -1,50 +1,79 @@
-/* --- CSS UTAMA --- */
-body { background-color: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 15px; }
-.container { max-width: 1000px; margin: 0 auto; }
-.card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-h2.main-title { color: #58a6ff; text-align: center; text-transform: uppercase; font-size: 24px; margin-bottom: 30px; letter-spacing: 1px; }
-h3 { color: #58a6ff; font-size: 15px; margin: 0 0 15px 0; border-left: 4px solid #58a6ff; padding-left: 12px; text-transform: uppercase; }
-
-/* --- TEXTAREA: WARNA & FONT BARU --- */
-textarea { 
-  width: 100% !important; 
-  background: #010409 !important; 
-  color: #e6edf3 !important; /* Warna Putih Kelabu (Bukan Hijau) */
-  border: 1px solid #30363d !important; 
-  border-radius: 8px; 
-  padding: 15px; 
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* Font Normal Monospace */
-  font-size: 14px !important; /* Saiz lebih besar */
-  line-height: 1.6;
-  box-sizing: border-box; 
-  margin-bottom: 15px; 
-  min-height: 200px;
-  overflow: auto !important; 
-  white-space: pre !important; 
-  word-wrap: normal !important;
+body {
+  background-color: #f0f2f5;
+  margin: 0; padding: 20px;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* --- BUTTON STYLE --- */
-.btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
-button { 
-  cursor: pointer; padding: 10px 18px; border-radius: 6px; font-size: 12px; font-weight: 600;
-  border: 1px solid #30363d; background: #21262d; color: #c9d1d9; transition: 0.2s;
+#converter-vault {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 24px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border: 1px solid #e1e8ed;
 }
-button:hover { background: #30363d; border-color: #8b949e; color: #58a6ff; }
-.btn-clear { color: #f85149 !important; border-color: rgba(248,81,73,0.4) !important; }
-.btn-clear:hover { background: #f85149 !important; color: white !important; }
-.btn-dl { background: #1f6feb !important; color: white !important; border: none; }
 
-/* Scrollbar Style */
-textarea::-webkit-scrollbar { width: 8px; height: 8px; }
-textarea::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
-textarea::-webkit-scrollbar-thumb:hover { background: #58a6ff; }
+.title-zone { text-align: center; margin-bottom: 25px; }
+.title-zone h2 { font-weight: 800; margin: 0; color: #1a1d23; font-size: 24px; }
+.title-zone span { color: #0984e3; }
 
-/* --- MOBILE SUPPORT --- */
-@media screen and (max-width: 600px) {
-  body { padding: 10px; }
-  textarea { font-size: 13px !important; padding: 12px; min-height: 180px; }
-  button { flex: 1 1 45%; padding: 12px 5px; font-size: 11px; }
-  h2.main-title { font-size: 20px; }
+/* Premium Drop Zone */
+.drop-zone {
+  height: 150px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #f3f7fa);
+  box-shadow: 10px 10px 20px #e6e9ed, -10px -10px 20px #ffffff;
+  transition: 0.3s; cursor: pointer; margin-bottom: 25px; position: relative; overflow: hidden;
 }
-    footer { text-align: center; padding: 30px; color: #8b949e; font-size: 11px; border-top: 1px solid #30363d; margin-top: 30px; }
+.drop-zone:active { transform: scale(0.97); }
+.drop-zone::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border: 2px dashed #0984e3; border-radius: 24px; margin: 10px; opacity: 0.2;
+}
+
+.icon-circle {
+  width: 55px; height: 55px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 2; margin-bottom: 10px;
+}
+
+#file-name { font-size: 14px; font-weight: 700; color: #2d3436; z-index: 2; text-align: center; padding: 0 15px; }
+
+/* Control Panel */
+.control-stack { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+.control-group { background: #f8f9fa; padding: 15px; border-radius: 15px; border: 1px solid #edf2f7; }
+.control-group label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #718096; margin-bottom: 10px; text-transform: uppercase; }
+
+select {
+  width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e0;
+  background: #fff; font-size: 14px; font-weight: 600; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;
+}
+
+input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #e2e8f0; border-radius: 5px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #0984e3; border-radius: 50%; cursor: pointer; }
+
+/* Progress Area */
+.status-area { margin-bottom: 20px; }
+.progress-bg { width: 100%; height: 10px; background: #edf2f7; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #e2e8f0; }
+#progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #0984e3, #00d2ff); transition: 0.2s; }
+
+/* Dual Buttons */
+.button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+.btn-exec {
+  padding: 16px; border: none; border-radius: 14px; font-weight: 700; font-size: 14px;
+  cursor: pointer; color: white; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.btn-exec:active { transform: scale(0.95); }
+.btn-exec:disabled { background: #cbd5e0 !important; cursor: not-allowed; box-shadow: none; }
+
+.btn-pdf { background: #1e272e; }
+.btn-cbz { background: #0984e3; }
+
+.footer-note { font-size: 10px; color: #a0aec0; text-align: center; margin-top: 25px; line-height: 1.6; }
