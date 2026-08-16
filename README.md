@@ -11,7 +11,7 @@
 * **Custom Control:** Pilihan untuk mengubah resolusi dan kualiti imej mengikut keperluan.
 
 ## 🚀 Cara Penggunaan
-1. Layari laman utama: [Lanzkila](https://lanzkila.github.io/)
+1. Layari laman utama: [Studio Converter](https://lanzkila.github.io/StudioConverter/)
 2. Klik pada kawasan **Drop Zone** untuk memilih fail dari peranti anda.
 3. Laraskan **Max Resolution** atau **Quality** jika perlu.
 4. Tekan butang **CONVERT** untuk proses PDF, atau **REVERSE** untuk memproses CBZ.
