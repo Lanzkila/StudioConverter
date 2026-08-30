@@ -1,69 +1,422 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manga Converter Studio</title>
-
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'></script>
-    <script src='https://unpkg.com/pdf-lib/dist/pdf-lib.min.js'></script>
-    
-    <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="color-scheme" content="light dark">
+  <title>Manga Studio Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
-<div id='converter-vault'>
-  <div class='title-zone'>
-    <h2>MANGA <span>STUDIO</span></h2>
-    <p style='font-size:12px; color:#718096; margin-top:5px;'>Hybrid: PDF Merge, Images, ZIP &amp; CBZ</p>
-  </div>
+<div class='app-view' id='dashboard-view'>
+  <div class='dashboard-shell'>
+    <header class='dashboard-header'>
+      <div class='dashboard-brand'>
+        <div class='dashboard-eyebrow'>MANGA WORKSPACE</div>
+        <h1>MANGA <span>STUDIO PRO</span></h1>
+        <p>Local-first manga conversion workspace for CBZ, ZIP, PDF and images.</p>
+      </div>
+      <div class='dashboard-actions'>
+        <span class='dashboard-version-pill'>DASHBOARD 3.0</span>
+        <button class='dashboard-header-btn' id='dashboard-about-btn' type='button'>ABOUT</button>
+        <button class='dashboard-header-btn' id='dashboard-changelog-btn' type='button'>CHANGELOG</button>
+        <button class='dashboard-open-btn' id='dashboard-open-converter' type='button'>OPEN CONVERTER</button>
+        <button aria-label='Toggle dark mode' class='icon-btn' id='dashboard-theme-btn' title='Dark / Light' type='button'>&#9680;</button>
+      </div>
+    </header>
 
-  <div class='drop-zone' id='drop-area' onclick='document.getElementById(&quot;file-input&quot;).click()'>
-    <div class='icon-circle'>
-      <svg height='26' viewBox='0 0 24 24' width='26' xmlns='http://www.w3.org/2000/svg'><path d='M12 11V3m0 0l-4 4m4-4l4 4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/><path d='M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+    <section aria-labelledby='dashboard-greeting' class='dashboard-hero'>
+      <div class='dashboard-hero-copy'>
+        <span class='dashboard-hero-kicker' id='dashboard-greeting'>Welcome back</span>
+        <h2>Ready for another manga conversion?</h2>
+        <p>Recent jobs, favourites, pinned conversions and local history stay here. Open the converter only when you need the full workspace.</p>
+        <div aria-label='Workspace features' class='dashboard-hero-badges'>
+          <span>100% LOCAL</span>
+          <span>NO FILE UPLOADS</span>
+          <span>CBZ &#183; PDF &#183; ZIP</span>
+          <span>HISTORY BACKUP</span>
+        </div>
+      </div>
+      <div class='dashboard-hero-last'>
+        <span class='hero-last-label'>LAST OUTPUT</span>
+        <strong id='dashboard-last-output-name'>No conversion yet</strong>
+        <small id='dashboard-last-output-meta'>Complete a converter job and it will appear here.</small>
+        <button class='dashboard-secondary-btn' id='dashboard-hero-open' type='button'>GO TO CONVERTER</button>
+      </div>
+    </section>
+
+    <section aria-label='Conversion statistics' class='dashboard-stat-grid'>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>01</span>
+        <div>
+          <span class='info-label'>History</span>
+          <strong id='dashboard-job-count'>0</strong>
+          <small>Dashboard records</small>
+        </div>
+      </article>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>02</span>
+        <div>
+          <span class='info-label'>Pages Processed</span>
+          <strong id='dashboard-total-pages'>0</strong>
+          <small>From recorded jobs</small>
+        </div>
+      </article>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>03</span>
+        <div>
+          <span class='info-label'>This Month</span>
+          <strong id='dashboard-month-count'>0</strong>
+          <small>Completed conversions</small>
+        </div>
+      </article>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>04</span>
+        <div>
+          <span class='info-label'>Space Saved</span>
+          <strong id='dashboard-space-saved'>&#8212;</strong>
+          <small id='dashboard-space-saved-copy'>Measured on new jobs</small>
+        </div>
+      </article>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>05</span>
+        <div>
+          <span class='info-label'>Favourites</span>
+          <strong id='dashboard-favorite-count'>0</strong>
+          <small id='dashboard-pinned-copy'>0 pinned</small>
+        </div>
+      </article>
+      <article class='dashboard-stat-card'>
+        <span class='stat-icon'>06</span>
+        <div>
+          <span class='info-label'>Most Used</span>
+          <strong id='dashboard-most-used'>&#8212;</strong>
+          <small id='dashboard-most-used-copy'>No format data yet</small>
+        </div>
+      </article>
+    </section>
+
+    <div class='dashboard-main-grid'>
+      <section class='dashboard-section dashboard-recent-section'>
+        <div class='dashboard-section-head dashboard-recent-head'>
+          <div class='dashboard-section-title'>
+            <b>RECENT CONVERSIONS</b>
+            <span>Pin, favourite, inspect and organise your locally recorded conversion history.</span>
+          </div>
+          <span class='dashboard-result-count' id='dashboard-result-count'>0 ITEMS</span>
+        </div>
+
+        <div class='dashboard-toolbar'>
+          <label class='dashboard-search-box'>
+            <span>SEARCH</span>
+            <input id='dashboard-history-search' placeholder='Search manga or output name...' type='search'>
+          </label>
+          <label class='dashboard-filter-box'>
+            <span>FORMAT</span>
+            <select id='dashboard-format-filter'>
+              <option value='all'>All formats</option>
+              <option value='PDF'>PDF</option>
+              <option value='CBZ'>CBZ</option>
+              <option value='ZIP'>ZIP</option>
+            </select>
+          </label>
+          <label class='dashboard-filter-box'>
+            <span>SHOW</span>
+            <select id='dashboard-special-filter'>
+              <option value='all'>Everything</option>
+              <option value='pinned'>Pinned</option>
+              <option value='favorite'>Favourites</option>
+            </select>
+          </label>
+          <label class='dashboard-filter-box'>
+            <span>SORT</span>
+            <select id='dashboard-sort-select'>
+              <option value='newest'>Newest first</option>
+              <option value='oldest'>Oldest first</option>
+              <option value='largest'>Largest output</option>
+              <option value='name'>Name A&#8211;Z</option>
+            </select>
+          </label>
+          <div class='dashboard-view-box'>
+            <span>VIEW</span>
+            <div class='dashboard-view-toggle'>
+              <button class='dashboard-view-btn active' id='dashboard-grid-view' type='button'>GRID</button>
+              <button class='dashboard-view-btn' id='dashboard-list-view' type='button'>LIST</button>
+            </div>
+          </div>
+        </div>
+
+        <div class='dashboard-recent-grid' id='dashboard-recent-grid'></div>
+        <div class='dashboard-pagination' id='dashboard-pagination'></div>
+      </section>
+
+      <aside class='dashboard-side-stack'>
+        <section class='dashboard-side-card'>
+          <div class='dashboard-side-head'>
+            <div>
+              <b>LOCAL HISTORY</b>
+              <span>Dashboard history is separate from converter controls</span>
+            </div>
+            <span class='system-pill'>LOCAL</span>
+          </div>
+          <div class='storage-metrics'>
+            <div class='storage-row'>
+              <span>History cache</span>
+              <strong id='dashboard-storage-size'>0 B</strong>
+            </div>
+            <div class='storage-row'>
+              <span>Thumbnails</span>
+              <strong id='dashboard-thumb-count'>0</strong>
+            </div>
+            <div class='storage-row'>
+              <span>Records</span>
+              <strong id='dashboard-record-count'>0 / 120</strong>
+            </div>
+          </div>
+          <div class='dashboard-side-actions'>
+            <button class='dashboard-small-btn' id='dashboard-export-history' type='button'>EXPORT JSON</button>
+            <button class='dashboard-small-btn' id='dashboard-import-history' type='button'>IMPORT JSON</button>
+            <button class='dashboard-small-btn' id='dashboard-clear-thumbnails' type='button'>CLEAR THUMBNAILS</button>
+            <button class='dashboard-small-btn danger' id='dashboard-clear-history' type='button'>CLEAR HISTORY</button>
+          </div>
+          <input accept='.json,application/json' id='dashboard-import-file' style='display:none' type='file'>
+        </section>
+
+        <section class='dashboard-side-card'>
+          <div class='dashboard-side-head'>
+            <div>
+              <b>THIS MONTH</b>
+              <span id='dashboard-month-label'>Current month summary</span>
+            </div>
+            <span class='system-pill'>SUMMARY</span>
+          </div>
+          <div class='month-summary-grid'>
+            <div class='month-summary-item'><span>Jobs</span><strong id='dashboard-month-jobs'>0</strong></div>
+            <div class='month-summary-item'><span>Pages</span><strong id='dashboard-month-pages'>0</strong></div>
+            <div class='month-summary-item'><span>Output</span><strong id='dashboard-month-output'>0 B</strong></div>
+            <div class='month-summary-item'><span>Saved</span><strong id='dashboard-month-saved'>&#8212;</strong></div>
+          </div>
+        </section>
+
+        <section class='dashboard-side-card'>
+          <div class='dashboard-side-head'>
+            <div>
+              <b>SYSTEM STATUS</b>
+              <span>Browser capabilities used by Manga Studio</span>
+            </div>
+            <span class='system-pill' id='dashboard-system-summary'>CHECKING</span>
+          </div>
+          <div class='system-status-list' id='dashboard-system-status'></div>
+        </section>
+      </aside>
     </div>
-    <p id='file-name'>Drop ZIP, CBZ, PDFs, or Images</p>
-    <input accept='.cbz, .zip, .pdf, image/*' id='file-input' multiple='multiple' style='display:none;' type='file'/>
-  </div>
 
-  <div class='control-stack'>
-    <div class='control-group'>
-      <label><span>MAX RESOLUTION (PDF ONLY)</span> <span id='reso-val' style='color:#0984e3'>Auto</span></label>
-      <select id='width-select' onchange='document.getElementById(&quot;reso-val&quot;).innerText = this.options[this.selectedIndex].text'>
-        <option value='original'>Auto (Original)</option>
-        <option value='2000'>2000px (Ultra)</option>
-        <option value='1600'>1600px (FHD)</option>
-        <option value='1200'>1200px (HD)</option>
-        <option value='800'>800px (Mobile)</option>
-      </select>
+    <div class='dashboard-lower-grid' id='dashboard-lower-grid'>
+      <section class='dashboard-section'>
+        <div class='dashboard-section-head'>
+          <div class='dashboard-section-title'>
+            <b>ACTIVITY</b>
+            <span>Your latest locally recorded converter actions.</span>
+          </div>
+        </div>
+        <div class='dashboard-activity-list' id='dashboard-activity-list'></div>
+      </section>
+
+      <section class='dashboard-section dashboard-whats-new' id='dashboard-whats-new'>
+        <div class='dashboard-section-head'>
+          <div class='dashboard-section-title'>
+            <b>WHAT&#39;S NEW</b>
+            <span>Manga Studio Pro &#183; Dashboard 3.0</span>
+          </div>
+          <button class='text-btn' id='dashboard-whats-new-dismiss' type='button'>DISMISS</button>
+        </div>
+        <div class='whats-new-list'>
+          <div><span>NEW</span><p>Pin and favourite conversions, switch Grid/List views and browse longer history with pagination.</p></div>
+          <div><span>NEW</span><p>Details drawer, monthly summary, measured space-saved statistics and dashboard history backup/import.</p></div>
+          <div><span>NEW</span><p>About and Changelog panels plus improved mobile layout without changing the converter workspace.</p></div>
+        </div>
+      </section>
     </div>
-    <div class='control-group'>
-      <label><span>QUALITY (PDF ONLY)</span> <span style='color:#0984e3'><span id='q-val'>80</span>%</span></label>
-      <input id='quality-range' max='100' min='10' oninput='document.getElementById(&quot;q-val&quot;).innerText=this.value' type='range' value='80'/>
+
+    <footer class='dashboard-footer'>
+      <div>
+        <div>&#169; <span id='dashboard-year'></span> <strong>Manga Studio Pro</strong>. Local-first manga toolkit.</div>
+        <div class='dashboard-footer-links'>
+          <button class='dashboard-footer-link' id='dashboard-footer-about' type='button'>About</button>
+          <button class='dashboard-footer-link' id='dashboard-footer-changelog' type='button'>Changelog</button>
+          <button class='dashboard-footer-link' id='dashboard-footer-backup' type='button'>Export History</button>
+        </div>
+      </div>
+      <div>Local processing &#183; No file uploads &#183; CBZ &#183; ZIP &#183; PDF &#183; Images</div>
+    </footer>
+  </div>
+
+  <div class='dashboard-drawer-backdrop' id='dashboard-detail-backdrop'></div>
+  <aside aria-hidden='true' class='dashboard-detail-drawer' id='dashboard-detail-drawer'>
+    <div class='dashboard-drawer-head'>
+      <b>CONVERSION DETAILS</b>
+      <button aria-label='Close details' class='dashboard-close-btn' id='dashboard-detail-close' type='button'>&#215;</button>
     </div>
-  </div>
-
-  <div class='status-area'>
-    <div style='display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#4a5568;'>
-      <span id='status-text' style='text-transform: uppercase;'>READY</span>
-      <span id='percentage'>0%</span>
+    <div class='dashboard-drawer-body'>
+      <div class='dashboard-detail-cover' id='dashboard-detail-cover'></div>
+      <h3 class='dashboard-detail-title' id='dashboard-detail-title'>Conversion</h3>
+      <p class='dashboard-detail-sub' id='dashboard-detail-sub'>Completed conversion details.</p>
+      <div class='dashboard-detail-grid'>
+        <div class='dashboard-detail-item'><span>Format</span><strong id='dashboard-detail-format'>&#8212;</strong></div>
+        <div class='dashboard-detail-item'><span>Pages</span><strong id='dashboard-detail-pages'>&#8212;</strong></div>
+        <div class='dashboard-detail-item'><span>Input</span><strong id='dashboard-detail-input'>&#8212;</strong></div>
+        <div class='dashboard-detail-item'><span>Output</span><strong id='dashboard-detail-output'>&#8212;</strong></div>
+        <div class='dashboard-detail-item'><span>Space Saved</span><strong id='dashboard-detail-saved'>&#8212;</strong></div>
+        <div class='dashboard-detail-item'><span>Date</span><strong id='dashboard-detail-date'>&#8212;</strong></div>
+      </div>
     </div>
-    <div class='progress-bg'><div id='progress-fill'/></div>
-  </div>
+    <div class='dashboard-drawer-actions'>
+      <button class='dashboard-drawer-action' id='dashboard-detail-favorite' type='button'>&#9734; FAVOURITE</button>
+      <button class='dashboard-drawer-action' id='dashboard-detail-pin' type='button'>PIN</button>
+      <button class='dashboard-drawer-action' id='dashboard-detail-open' type='button'>OPEN CONVERTER</button>
+      <button class='dashboard-drawer-action danger' id='dashboard-detail-remove' type='button'>REMOVE HISTORY</button>
+    </div>
+  </aside>
 
-  <div class='button-grid'>
-    <button class='btn-exec btn-pdf' id='pdf-btn'>CONVERT</button>
-    <button class='btn-exec btn-cbz' id='cbz-btn'>REVERSE</button>
-  </div>
+  <div class='dashboard-modal-backdrop' id='dashboard-modal-backdrop'></div>
 
-<div class='footer-note'>
-    <strong>Multi-Support:</strong> ZIP/CBZ to PDF, Multiple Images to PDF, or Multiple PDF Merge.<br>
-    &copy; <span id="current-year"></span> Manga Studio.
+  <section aria-hidden='true' class='dashboard-modal-card' id='dashboard-about-modal'>
+    <div class='dashboard-modal-head'>
+      <b>ABOUT MANGA STUDIO PRO</b>
+      <button aria-label='Close about panel' class='dashboard-close-btn dashboard-modal-close' type='button'>&#215;</button>
+    </div>
+    <div class='dashboard-modal-body'>
+      <p>Manga Studio Pro is a local-first manga toolkit. Files are processed inside your browser; the dashboard stores only local conversion history, thumbnails and dashboard preferences.</p>
+      <div class='dashboard-modal-list'>
+        <div><b>Supported workspace</b><span>CBZ, ZIP, PDF and common image formats, with conversion, page tools, metadata and repair functions in the existing converter.</span></div>
+        <div><b>Dashboard 3.0</b><span>Recent conversion library, pinned and favourite items, details, pagination, local backup/import, activity and browser status.</span></div>
+        <div><b>Privacy model</b><span>No account is required by this theme and dashboard history stays in browser storage unless you explicitly export it.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-hidden='true' class='dashboard-modal-card' id='dashboard-changelog-modal'>
+    <div class='dashboard-modal-head'>
+      <b>CHANGELOG</b>
+      <button aria-label='Close changelog panel' class='dashboard-close-btn dashboard-modal-close' type='button'>&#215;</button>
+    </div>
+    <div class='dashboard-modal-body'>
+      <div class='dashboard-modal-list'>
+        <div><b>Dashboard 3.0</b><span>Pin/favourite history, details drawer, Grid/List modes, pagination, JSON backup/import, measured space saved, monthly summary, About/Changelog and mobile polish.</span></div>
+        <div><b>Dashboard 2.0</b><span>Premium Recent Conversions, search/filter/sort, statistics, local cache information, browser status and activity timeline.</span></div>
+        <div><b>Dashboard 1.0</b><span>Dashboard landing page, Recent Conversions with thumbnails, information cards and automatic footer year.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div aria-live='polite' class='dashboard-toast' id='dashboard-toast'></div>
 </div>
+
+<div class='app-view is-hidden' id='converter-vault'>
+  <div class='topbar'>
+    <div class='brand'><h2>MANGA <span>STUDIO PRO</span></h2><p>CBZ &#183; ZIP &#183; PDF &#183; Images &#183; Page Manager &#183; Batch &#183; Metadata &#183; Repair</p></div>
+    <div class='top-actions'>
+      <button class='icon-btn converter-back-btn' id='back-dashboard' title='Back to Dashboard' type='button'>DASHBOARD</button>
+      <button class='icon-btn' id='load-pages-top' title='Load Page Workspace' type='button'>PAGES</button>
+      <button aria-label='Toggle dark mode' class='icon-btn' id='theme-btn' title='Dark / Light' type='button'>&#9680;</button>
+    </div>
+  </div>
+
+  <div class='main-columns'>
+    <div class='left-stack'>
+      <div class='drop-zone' id='drop-area' role='button' tabindex='0'>
+        <div class='icon-circle'><svg height='27' viewBox='0 0 24 24' width='27' xmlns='http://www.w3.org/2000/svg'><path d='M12 11V3m0 0l-4 4m4-4l4 4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/><path d='M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4' fill='none' stroke='#0984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg></div>
+        <p id='file-name'>Drop or choose manga files</p><span class='drop-sub'>PDF &#183; CBZ &#183; ZIP &#183; JPG &#183; PNG &#183; WEBP &#8212; multiple files supported</span>
+        <input accept='.cbz,.zip,.pdf,image/*' id='file-input' multiple='multiple' style='display:none' type='file'>
+      </div>
+      
+      <div class='summary-row'>
+        <div class='summary-card'><b id='sum-files'>0</b><span>Files</span></div><div class='summary-card'><b id='sum-size'>0 B</b><span>Input Size</span></div><div class='summary-card'><b id='sum-type'>&#8212;</b><span>Type</span></div><div class='summary-card'><b id='sum-pages'>&#8212;</b><span>Workspace Pages</span></div>
+      </div>
+      
+      <div class='queue-wrap' id='queue-wrap'>
+        <div class='queue-head'><b>JOB QUEUE</b><div class='small-actions'><button class='text-btn' id='clear-done'>CLEAR DONE</button><button class='text-btn danger' id='clear-btn'>CLEAR ALL</button></div></div><div id='file-list'></div>
+      </div>
+      
+      <div class='status-area'><div class='status-top'><span id='status-text'>READY</span><span id='percentage'>0%</span></div><div class='progress-bg'><div id='progress-fill'></div></div></div>
+      <div class='button-grid'><button class='btn-exec btn-pdf' id='pdf-btn'>MAKE PDF</button><button class='btn-exec btn-cbz' id='cbz-btn'>MAKE CBZ</button><button class='btn-exec btn-zip' id='zip-btn'>MAKE ZIP</button></div><button class='btn-cancel' id='cancel-btn'>CANCEL CURRENT PROCESS</button>
+    </div>
+    <div class='right-stack'>
+      <div class='control-stack'>
+        <div class='control-group full'><label><span>PRESET</span><span id='preset-hint'>BALANCED</span></label><select id='preset-select'><option value='reader'>Reader / Balanced</option><option value='archive'>Archive Quality</option><option value='mobile'>Mobile</option><option value='small'>Small File</option><option value='original'>Original / Maximum</option><option value='webtoon'>Webtoon</option></select></div>
+        <div class='control-group'><label><span>MAX WIDTH</span><span id='reso-val'>1600px</span></label><select id='width-select'><option value='original'>Original</option><option value='2400'>2400px</option><option value='2000'>2000px</option><option selected='selected' value='1600'>1600px</option><option value='1200'>1200px</option><option value='1080'>1080px</option><option value='800'>800px</option></select></div>
+        <div class='control-group'><label><span>QUALITY</span><span><span id='q-val'>82</span>%</span></label><input id='quality-range' max='100' min='35' type='range' value='82'></div>
+        <div class='control-group'><label><span>ARCHIVE IMAGE</span><span>OUTPUT</span></label><select id='image-format'><option value='jpeg'>JPEG</option><option value='png'>PNG</option></select></div>
+        <div class='control-group'><label><span>SORT</span><span>AUTO</span></label><select id='sort-select'><option value='natural'>Natural 1,2,10</option><option value='reverse'>Reverse</option><option value='name'>Plain filename</option></select></div>
+        <div class='control-group full'><label><span>OUTPUT NAME / TEMPLATE</span><span id='name-preview'>AUTO</span></label><input class='text-input' id='output-name' placeholder='Optional fixed output name' type='text'><input class='text-input' id='name-template' style='margin-top:7px' type='text' value='[{series}] Vol.{volume} Ch.{chapter} - {name}'><div style='font-size:8px;color:var(--muted);margin-top:6px'>{series} {volume} {chapter} {title} {name} {index}</div></div>
+        <div class='control-group full'>
+          <div class='toggle-row'><div class='toggle-copy'><b>Batch Manga Mode</b><small>Each queued manga exports separately</small></div><label class='switch'><input id='batch-toggle' type='checkbox'><span class='slider'></span></label></div>
+          <div class='toggle-row'><div class='toggle-copy'><b>Sequential page names</b><small>001.jpg, 002.jpg&#8230;</small></div><label class='switch'><input checked='checked' id='sequential-toggle' type='checkbox'><span class='slider'></span></label></div>
+          <div class='toggle-row'><div class='toggle-copy'><b>Auto crop white border</b><small>Trim large blank manga margins</small></div><label class='switch'><input id='crop-toggle' type='checkbox'><span class='slider'></span></label></div>
+          <div class='toggle-row'><div class='toggle-copy'><b>Grayscale</b><small>Convert page output to grayscale</small></div><label class='switch'><input id='gray-toggle' type='checkbox'><span class='slider'></span></label></div>
+          <div class='toggle-row'><div class='toggle-copy'><b>Never upscale</b><small>Keep smaller source images at original size</small></div><label class='switch'><input checked='checked' id='no-upscale-toggle' type='checkbox'><span class='slider'></span></label></div>
+          <div class='toggle-row'><div class='toggle-copy'><b>Keep device awake</b><small>During long conversion when supported</small></div><label class='switch'><input checked='checked' id='wake-toggle' type='checkbox'><span class='slider'></span></label></div>
+        </div>
+      </div>
+      <div class='history'><div class='history-head'><b>RECENT OUTPUTS</b><button class='text-btn' id='history-clear'>CLEAR</button></div><div class='history-list' id='history-list'></div></div>
+    </div>
+  </div>
+
+  <div class='workspace'>
+    <div class='workspace-top'><div class='workspace-title'><b>PAGE WORKSPACE &amp; MANGA TOOLS</b><span id='workspace-sub'>Load pages to edit, inspect, split, repair and build covers.</span></div><div class='tabs'><button class='tab-btn active' data-tab='pages'>PAGES</button><button class='tab-btn' data-tab='tools'>TOOLS</button><button class='tab-btn' data-tab='meta'>METADATA</button><button class='tab-btn' data-tab='inspect'>INSPECTOR</button></div></div>
+
+    <div class='tab-panel active' id='tab-pages'>
+      <div class='panel-box'>
+        <div class='toolbar'><button class='tool-btn' id='load-workspace'>LOAD / REFRESH PAGES</button><button class='tool-btn ghost' id='select-all-pages'>SELECT ALL</button><button class='tool-btn ghost' id='clear-page-select'>CLEAR SELECT</button><button class='tool-btn ghost' id='rotate-left'>&#8630; ROTATE</button><button class='tool-btn ghost' id='rotate-right'>&#8631; ROTATE</button><button class='tool-btn danger' id='delete-pages'>DELETE</button><span class='toolbar-spacer'></span><span class='workspace-stats' id='page-stats'>0 pages</span></div>
+        <div id='page-grid'><div class='empty-workspace'>Load the queue into Page Workspace to preview and edit manga pages.</div></div>
+      </div>
+    </div>
+
+    <div class='tab-panel' id='tab-tools'>
+      <div class='panel-grid three'>
+        <div class='tool-card'><h4>SPLIT BY PAGE RANGE</h4><p>Example: 1-20, 21-40, 41-end. All parts are bundled into one ZIP.</p><input class='text-input' id='split-ranges' placeholder='1-20,21-40,41-end' type='text'><select id='split-format' style='margin:7px 0'><option value='cbz'>CBZ parts</option><option value='pdf'>PDF parts</option><option value='zip'>ZIP parts</option></select><button class='tool-btn' id='split-btn'>SPLIT &amp; BUNDLE</button></div>
+        <div class='tool-card'><h4>EXTRACT IMAGES</h4><p>Selected pages are used first; otherwise all workspace pages are extracted.</p><button class='tool-btn good' id='extract-btn'>EXTRACT TO ZIP</button></div>
+        <div class='tool-card'><h4>WEBTOON / LONG STRIP</h4><p>Stitch pages vertically into safe chunks instead of one giant browser canvas.</p><div class='control-line'><select id='webtoon-width'><option value='1080'>1080px</option><option value='1440'>1440px</option><option value='800'>800px</option></select><select id='webtoon-height'><option selected='selected' value='10000'>10k chunk</option><option value='14000'>14k chunk</option><option value='18000'>18k chunk</option></select></div><button class='tool-btn' id='webtoon-btn' style='margin-top:7px'>BUILD LONG STRIP ZIP</button></div>
+        <div class='tool-card'><h4>DUPLICATE PAGE DETECTOR</h4><p>Uses a small visual hash to flag exact or near-duplicate manga pages.</p><button class='tool-btn warn' id='duplicate-btn'>SCAN DUPLICATES</button><button class='tool-btn ghost' id='select-duplicates' style='margin-top:7px'>SELECT FLAGGED</button></div>
+        <div class='tool-card'><h4>OCR CHAPTER DETECTION</h4><p>Lazy-load OCR only when used. Scans selected pages or the first 10 pages for chapter markers.</p><select id='ocr-lang' style='margin-bottom:7px'><option value='eng'>English</option><option value='msa'>Malay</option><option value='jpn'>Japanese</option></select><button class='tool-btn alt' id='ocr-btn'>SCAN CHAPTER TEXT</button></div>
+        <div class='tool-card'><h4>CBZ CHECK &amp; REPAIR</h4><p>Checks junk folders, nesting, duplicate names and ComicInfo; repair normalizes clean sequential pages.</p><button class='tool-btn ghost' id='check-cbz'>CHECK ARCHIVE</button><button class='tool-btn good' id='repair-cbz' style='margin-top:7px'>REPAIR TO CBZ</button></div>
+      </div>
+      <div class='result-box empty' id='tools-result' style='margin-top:12px'>Tool results will appear here.</div>
+    </div>
+
+    <div class='tab-panel' id='tab-meta'>
+      <div class='panel-box'>
+        <div class='form-grid'>
+          <div class='field'><label>Title</label><input class='text-input meta-watch' id='meta-title' type='text'></div><div class='field'><label>Series</label><input class='text-input meta-watch' id='meta-series' type='text'></div><div class='field'><label>Chapter / Number</label><input class='text-input meta-watch' id='meta-chapter' type='text'></div>
+          <div class='field'><label>Volume</label><input class='text-input meta-watch' id='meta-volume' type='text'></div><div class='field'><label>Writer / Author</label><input class='text-input' id='meta-writer' type='text'></div><div class='field'><label>Artist</label><input class='text-input' id='meta-artist' type='text'></div>
+          <div class='field'><label>Publisher</label><input class='text-input' id='meta-publisher' type='text'></div><div class='field'><label>Year</label><input class='text-input' id='meta-year' inputmode='numeric' type='text'></div><div class='field'><label>Genre</label><input class='text-input' id='meta-genre' type='text'></div>
+          <div class='field'><label>Country</label><input class='text-input' id='meta-country' placeholder='JP / KR / CN / MY...' type='text'></div><div class='field'><label>Type</label><select id='meta-type'><option value='Manga'>Manga</option><option value='Webtoon'>Webtoon</option><option value='Comic'>Comic</option></select></div><div class='field'><label>Reading Direction</label><select id='meta-direction'><option value='RightToLeft'>Right &#8594; Left</option><option value='LeftToRight'>Left &#8594; Right</option></select></div>
+          <div class='field full'><label>Summary</label><textarea id='meta-summary'></textarea></div>
+        </div>
+        <div class='panel-grid' style='margin-top:12px'>
+          <div class='tool-card'><h4>COVER MANAGER</h4><p>Choose a workspace page as cover, replace it, extract it, or automatically use the first page.</p><div class='toolbar' style='margin:0'><button class='tool-btn' id='set-cover'>SET SELECTED</button><button class='tool-btn ghost' id='auto-cover'>FIRST PAGE</button><button class='tool-btn ghost' id='replace-cover'>REPLACE</button><button class='tool-btn ghost' id='extract-cover'>EXTRACT</button></div><input accept='image/*' id='cover-input' style='display:none' type='file'></div>
+          <div class='tool-card'><h4>CBZ COVER &amp; COMICINFO</h4><p>ComicInfo.xml is embedded in CBZ output. Cover can be preserved at higher quality.</p><div class='toggle-row'><div class='toggle-copy'><b>Put cover first</b><small>Move designated cover to page 001 during archive output</small></div><label class='switch'><input checked='checked' id='cover-first-toggle' type='checkbox'><span class='slider'></span></label></div><div class='toggle-row'><div class='toggle-copy'><b>Do not recompress cover</b><small>Preserve source cover when possible</small></div><label class='switch'><input checked='checked' id='cover-original-toggle' type='checkbox'><span class='slider'></span></label></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class='tab-panel' id='tab-inspect'>
+      <div class='panel-grid'>
+        <div class='panel-box'><div class='section-head'><b>FILE / PAGE INSPECTOR</b><button class='tool-btn' id='inspect-btn'>RUN FULL INSPECTION</button></div><div class='result-box empty' id='inspect-result'>No inspection has been run.</div></div>
+        <div class='panel-box'><div class='section-head'><b>LAST OUTPUT SIZE</b><span class='workspace-stats'>Approximate estimate before export; exact after export.</span></div><div class='compare-grid'><div class='compare-card'><span>Input</span><b id='cmp-input'>&#8212;</b></div><div class='compare-card'><span>Output</span><b id='cmp-output'>&#8212;</b></div><div class='compare-card'><span>Saved</span><b id='cmp-saved'>&#8212;</b></div><div class='compare-card'><span>Ratio</span><b id='cmp-ratio'>&#8212;</b></div></div><div class='result-box empty' id='estimate-result' style='margin-top:10px'>Run Inspector for an estimated output size.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class='footer-note'><strong>Local-first:</strong> conversions, previews, metadata and repair run in your browser. OCR language data is fetched only when OCR is used. Large archives are handled page-by-page where possible.</div>
 </div>
 
-   <script src="script.js"></script>
-
+<div class='modal' id='preview-modal'><div class='modal-card'><div class='modal-head'><span id='modal-title'>Page Preview</span><button class='mini-btn' id='modal-close'>&#215;</button></div><div class='modal-body'><img alt='Page preview' id='modal-img'></div></div></div>
+  <script src="script.js"></script>
 </body>
 </html>
